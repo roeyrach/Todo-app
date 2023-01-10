@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import TodoItem from "./TodoItem"
 import uuid from "react-uuid"
+import "../App.css"
 
 function TodoList(props) {
 	const [task, setTask] = useState("Add a task")
@@ -60,12 +61,22 @@ function TodoList(props) {
 			<div
 				style={{
 					marginBottom: "10px",
+					minWidth: "100%",
 				}}
 			>
 				<form onSubmit={handleSubmit}>
-					<input type="submit" value="+" />
+					<button id="plus" sytle={{}} type="submit" value="+">
+						+
+					</button>
 					<label>
-						<input style ={{width:"51.5vw"}}
+						<input
+							style={{
+								minWidth: "95%",
+								display: "relaive",
+								backgroundColor: props.darkModeEnabled ? "#333333" : "#f1f1f1",
+								color: props.darkModeEnabled ? "#f1f1f1" : "#333333",
+								borderRadius: "10px",
+							}}
 							type="text"
 							value={task}
 							onClick={() => setTask("")}
@@ -76,25 +87,15 @@ function TodoList(props) {
 			</div>
 			<div
 				style={{
-					border: "1px solid black",
 					height: "100%",
 					display: "relative",
 				}}
 			>
 				{todos.map((todo, index) => {
 					if (filter === " All") {
-						return (<TodoItem
-							index={index}
-							key={todo.id}
-							onClick={deleteTask}
-							content={todo.content}
-							cb={todo.isComplete}
-							id={todo.id}
-							onChange={checkBoxChange}
-						></TodoItem>)
-					} else if (filter === " Active") {
-						if (todo.isComplete === false) {
-							return (<TodoItem
+						return (
+							<TodoItem
+								darkModeEnabled={props.darkModeEnabled}
 								index={index}
 								key={todo.id}
 								onClick={deleteTask}
@@ -102,19 +103,37 @@ function TodoList(props) {
 								cb={todo.isComplete}
 								id={todo.id}
 								onChange={checkBoxChange}
-							></TodoItem>)
+							></TodoItem>
+						)
+					} else if (filter === " Active") {
+						if (todo.isComplete === false) {
+							return (
+								<TodoItem
+									darkModeEnabled={props.darkModeEnabled}
+									index={index}
+									key={todo.id}
+									onClick={deleteTask}
+									content={todo.content}
+									cb={todo.isComplete}
+									id={todo.id}
+									onChange={checkBoxChange}
+								></TodoItem>
+							)
 						}
 					} else if (filter === " Completed") {
 						if (todo.isComplete === true) {
-							return (<TodoItem
-								index={index}
-								key={todo.id}
-								onClick={deleteTask}
-								content={todo.content}
-								cb={todo.isComplete}
-								id={todo.id}
-								onChange={checkBoxChange}
-							></TodoItem>)
+							return (
+								<TodoItem
+									darkModeEnabled={props.darkModeEnabled}
+									index={index}
+									key={todo.id}
+									onClick={deleteTask}
+									content={todo.content}
+									cb={todo.isComplete}
+									id={todo.id}
+									onChange={checkBoxChange}
+								></TodoItem>
+							)
 						}
 					}
 				})}
@@ -125,15 +144,31 @@ function TodoList(props) {
 						rowGap: "1vw",
 						gap: "5vw",
 						justifyContent: "center",
+						border: `1px solid ${props.darkModeEnabled ? "#f1f1f1" : "#333333"}`,
+						borderRadius: "5px",
+						paddingRight: "5px",
+						paddingLeft: "5px",
+						position: "relative",
 					}}
 				>
-					<span>Number of tasks: {counter} </span>
-					<div style={{}}>
+					<label>Number of tasks: {counter} </label>
+					<div
+						style={{
+							position: "absolute",
+							top: "50%",
+							left: "50%",
+							transform: "translate(-50%, -50%)",
+							padding: "1em",
+						}}
+					>
 						<span onClick={showKindsOfLists}> All</span>
 						<span onClick={showKindsOfLists}> Active</span>
 						<span onClick={showKindsOfLists}> Completed</span>
 					</div>
-					<span style={{ marginLeft: "auto" }} onClick={clearCompleted}>
+					<span
+						style={{ marginLeft: "auto", hover: "blue" }}
+						onClick={clearCompleted}
+					>
 						Clear completed
 					</span>
 				</div>
