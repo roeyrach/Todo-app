@@ -8,11 +8,21 @@ function TodoItem(props) {
 				<input
 					style={{ borderRadius: "5px" }}
 					type="checkbox"
-					defaultChecked={checked}
-					onChange={() => setChecked(!checked)}
+					defaultChecked={props.cb}
+					onChange={() => {
+						props.onChange(props.id)
+					}}
 				/>
 			</label>
-			{props.index + 1 + " " + props.content}
+			<label
+				style={{
+					textDecoration: props.cb && "line-through",
+					opacity: props.cb && "0.5",
+				}}
+			>
+				{props.index + 1 + " " + props.content}
+			</label>
+
 			<button
 				style={{ marginLeft: "auto" }}
 				onClick={() => {
