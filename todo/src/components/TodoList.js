@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import TodoItem from "./TodoItem"
 import uuid from "react-uuid"
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import "../App.css"
 
 function TodoList(props) {
@@ -8,6 +9,23 @@ function TodoList(props) {
 	const [todos, setTodos] = useState(props.todos)
 	const [counter, setCounter] = useState(0)
 	const [filter, setFilter] = useState(" All")
+
+	const onDragEnd = (result) => {
+		const { destination, source } = result
+
+		if (!destination) {
+			return
+		}
+
+		if (destination.index === source.index) {
+			return
+		}
+
+		const newTasks = Array.from(todos)
+		const [removed] = newTasks.splice(source.index, 1)
+		newTasks.splice(destination.index, 0, removed)
+		setTodos(newTasks)
+	}
 
 	const handleChange = (event) => {
 		setTask(event.target.value)
@@ -51,7 +69,12 @@ function TodoList(props) {
 			setFilter(val)
 		}
 	}
-
+	let filteredTasks = todos
+	if (filter === " Active") {
+		filteredTasks = todos.filter((task) => !task.isComplete)
+	} else if (filter === " Completed") {
+		filteredTasks = todos.filter((task) => task.isComplete)
+	}
 	return (
 		<div
 			style={{
@@ -91,52 +114,38 @@ function TodoList(props) {
 					display: "relative",
 				}}
 			>
-				{todos.map((todo, index) => {
-					if (filter === " All") {
-						return (
-							<TodoItem
-								darkModeEnabled={props.darkModeEnabled}
-								index={index}
-								key={todo.id}
-								onClick={deleteTask}
-								content={todo.content}
-								cb={todo.isComplete}
-								id={todo.id}
-								onChange={checkBoxChange}
-							></TodoItem>
-						)
-					} else if (filter === " Active") {
-						if (todo.isComplete === false) {
-							return (
-								<TodoItem
-									darkModeEnabled={props.darkModeEnabled}
-									index={index}
-									key={todo.id}
-									onClick={deleteTask}
-									content={todo.content}
-									cb={todo.isComplete}
-									id={todo.id}
-									onChange={checkBoxChange}
-								></TodoItem>
-							)
-						}
-					} else if (filter === " Completed") {
-						if (todo.isComplete === true) {
-							return (
-								<TodoItem
-									darkModeEnabled={props.darkModeEnabled}
-									index={index}
-									key={todo.id}
-									onClick={deleteTask}
-									content={todo.content}
-									cb={todo.isComplete}
-									id={todo.id}
-									onChange={checkBoxChange}
-								></TodoItem>
-							)
-						}
-					}
-				})}
+				<DragDropContext onDragEnd={onDragEnd}>
+					<Droppable droppableId="task-list">
+						{(provided) => (
+							<ul ref={provided.innerRef} {...provided.droppableProps}>
+								{filteredTasks.map((task, index) => (
+									<Draggable key={task.id} draggableId={task.id} index={index}>
+										{(provided) => (
+											<li
+												ref={provided.innerRef}
+												{...provided.draggableProps}
+												{...provided.dragHandleProps}
+											>
+												<TodoItem
+													darkModeEnabled={props.darkModeEnabled}
+													index={index}
+													key={task.id}
+													onClick={deleteTask}
+													content={task.content}
+													cb={task.isComplete}
+													id={task.id}
+													onChange={checkBoxChange}
+												></TodoItem>
+											</li>
+										)}
+									</Draggable>
+								))}
+								{provided.placeholder}
+							</ul>
+						)}
+					</Droppable>
+				</DragDropContext>
+
 				<div
 					style={{
 						display: "flex",

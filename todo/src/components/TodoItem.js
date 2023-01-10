@@ -28,7 +28,7 @@ function TodoItem(props) {
 					opacity: props.cb && "0.5",
 				}}
 			>
-				{props.index + 1 + " " + props.content}
+				{props.index + 1 + ". " + props.content}
 			</label>
 
 			<button
