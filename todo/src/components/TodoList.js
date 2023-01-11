@@ -6,7 +6,7 @@ import "../App.css"
 
 function TodoList(props) {
 	const [task, setTask] = useState("Add a task")
-	const [todos, setTodos] = useState(props.todos)
+	const [todos, setTodos] = useState([])
 	const [counter, setCounter] = useState(0)
 	const [filter, setFilter] = useState(" All")
 
@@ -41,11 +41,8 @@ function TodoList(props) {
 		setTask("")
 	}
 	const deleteTask = (id) => {
-		const index = todos.findIndex((item) => item.id === id)
-
-		if (index !== -1) {
-			todos.splice(index, 1)
-		}
+		const index = todos.filter((item) => item.id === id)
+		todos.splice(index, 1)
 		setTodos([...todos])
 		setCounter(counter - 1)
 	}
@@ -132,7 +129,7 @@ function TodoList(props) {
 													key={task.id}
 													onClick={deleteTask}
 													content={task.content}
-													cb={task.isComplete}
+													checkBox={task.isComplete}
 													id={task.id}
 													onChange={checkBoxChange}
 												></TodoItem>

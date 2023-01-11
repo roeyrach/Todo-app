@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 
 function TodoItem(props) {
 	return (
@@ -16,7 +16,7 @@ function TodoItem(props) {
 						borderRadius: "5px",
 					}}
 					type="checkbox"
-					defaultChecked={props.cb}
+					defaultChecked={props.checkBox}
 					onChange={() => {
 						props.onChange(props.id)
 					}}
@@ -24,8 +24,8 @@ function TodoItem(props) {
 			</label>
 			<label
 				style={{
-					textDecoration: props.cb && "line-through",
-					opacity: props.cb && "0.5",
+					textDecoration: props.checkBox && "line-through",
+					opacity: props.checkBox && "0.5",
 				}}
 			>
 				{props.index + 1 + ". " + props.content}
